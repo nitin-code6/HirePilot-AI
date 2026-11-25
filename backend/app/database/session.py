@@ -1,34 +1,35 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from app.core.config import settings
 import os
 
-# Ensure upload & db directories exist
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+# Synchronous SQLite engine compatible with standard python sqlite3
+# This allows robust, thread-safe and fast CRUD with standard FastAPI dependency injection
+db_url = settings.DATABASE_URL
+if db_url.startswith("sqlite+aiosqlite"):
+    db_url = db_url.replace("sqlite+aiosqlite", "sqlite")
+elif db_url.startswith("postgresql+asyncpg"):
+    db_url = db_url.replace("postgresql+asyncpg", "postgresql+psycopg2")
 
-# Async SQLite needs connect_args for multithreading
-connect_args = {"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}
+connect_args = {"check_same_thread": False} if "sqlite" in db_url else {}
 
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=False,
+engine = create_engine(
+    db_url,
     connect_args=connect_args,
     future=True
 )
 
-AsyncSessionLocal = async_sessionmaker(
+SessionLocal = sessionmaker(
     bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
     autocommit=False,
     autoflush=False
 )
 
 Base = declarative_base()
 
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

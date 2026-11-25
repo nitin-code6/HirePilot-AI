@@ -1,11 +1,9 @@
-import asyncio
 from app.database.session import engine, Base
 from app.models import *
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    print("Database tables initialized successfully.")
+def init_db():
+    Base.metadata.create_all(bind=engine)
+    print("Database tables initialized successfully via SQLAlchemy.")
 
 if __name__ == "__main__":
-    asyncio.run(init_db())
+    init_db()
