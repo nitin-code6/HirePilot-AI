@@ -47,5 +47,6 @@ uploads/*
 brain/
 *.sqlite
 *.sqlite3
+*.db
 data/
 logs/
