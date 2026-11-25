@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional, List, Any, Dict
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
+EmailStr = str
 from app.models.enums import (
     UserRole, JobStatus, JobType, ApplicationStage, ApprovalStatus, ApprovalActionType, InterviewStatus
 )

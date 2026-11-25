@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.database.session import get_db
-from app.models.models import Candidate, Application, Resume, AuditLog
+from app.models.models import Candidate, Application, Resume, AuditLog, User
 from app.models.enums import UserRole
 from app.schemas.recruitment import (
     CandidateCreate, CandidateUpdate, CandidateResponse,
