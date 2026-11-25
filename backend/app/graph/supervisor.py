@@ -1,27 +1,27 @@
 from typing import Dict, Any
-from app.graph.state import RecruitmentState
 from app.agents.specialized import SpecializedAgents
 
 class SupervisorOrchestrator:
     """
-    Supervisor Agent that classifies user intent, routes to specialized agents,
-    and constructs structured multi-agent state.
+    Supervisor Agent that accurately classifies HR prompt intent,
+    routes to the specialized agent, and coordinates approval flags.
     """
 
     @staticmethod
     def route_intent(prompt: str) -> str:
         p = prompt.lower()
-        if any(w in p for w in ["email", "invite", "draft", "message", "communication"]):
+        # High specificity priority checks
+        if any(w in p for w in ["draft email", "draft interview", "invitation", "send email", "email", "communication"]):
             return "communication_agent"
-        elif any(w in p for w in ["candidate", "applicant", "profile", "pool", "find candidate"]):
-            return "candidate_agent"
-        elif any(w in p for w in ["screen", "resume", "score", "match", "qualif"]):
-            return "resume_screening_agent"
-        elif any(w in p for w in ["interview", "slot", "calendar", "schedule"]):
+        elif any(w in p for w in ["prepare interview", "schedule interview", "interview slot", "interview for", "available slot"]):
             return "interview_agent"
-        elif any(w in p for w in ["analytic", "funnel", "metric", "report", "stat", "rate"]):
+        elif any(w in p for w in ["screen", "find the best candidate", "matching candidate", "best candidate", "qualification score"]):
+            return "resume_screening_agent"
+        elif any(w in p for w in ["shortlist", "candidate", "applicant", "talent pool", "profile"]):
+            return "candidate_agent"
+        elif any(w in p for w in ["funnel", "analytics", "statistic", "metric", "trend", "report"]):
             return "analytics_agent"
-        elif any(w in p for w in ["job", "role", "position", "create job", "jd", "description"]):
+        elif any(w in p for w in ["create a job", "create job", "job opening", "requisition", "opening for", "new job", "backend developer", "frontend developer", "role"]):
             return "job_agent"
         return "job_agent"
 

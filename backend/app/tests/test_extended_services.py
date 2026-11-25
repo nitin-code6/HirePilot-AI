@@ -30,4 +30,4 @@ def test_bias_mitigation():
     from app.services.bias_mitigation import BiasMitigationService
     cleaned = BiasMitigationService.sanitize_resume_text("He graduated in 2012 and worked as an engineer.")
     assert "2012" not in cleaned
-    assert "candidate" in cleaned
+    assert "[CANDIDATE]" in cleaned
