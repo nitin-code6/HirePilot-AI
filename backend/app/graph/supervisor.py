@@ -11,18 +11,18 @@ class SupervisorOrchestrator:
     @staticmethod
     def route_intent(prompt: str) -> str:
         p = prompt.lower()
-        if any(w in p for w in ["job", "role", "position", "create job", "jd", "description"]):
-            return "job_agent"
+        if any(w in p for w in ["email", "invite", "draft", "message", "communication"]):
+            return "communication_agent"
         elif any(w in p for w in ["screen", "resume", "score", "match", "qualif"]):
             return "resume_screening_agent"
         elif any(w in p for w in ["interview", "slot", "calendar", "schedule"]):
             return "interview_agent"
-        elif any(w in p for w in ["email", "invite", "draft", "message", "communication"]):
-            return "communication_agent"
         elif any(w in p for w in ["analytic", "funnel", "metric", "report", "stat", "rate"]):
             return "analytics_agent"
         elif any(w in p for w in ["candidate", "applicant", "profile", "pool", "find"]):
             return "candidate_agent"
+        elif any(w in p for w in ["job", "role", "position", "create job", "jd", "description"]):
+            return "job_agent"
         return "job_agent"
 
     @classmethod
