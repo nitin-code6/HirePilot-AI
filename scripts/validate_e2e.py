@@ -62,16 +62,19 @@ class TestEndToEndRecruitmentFlow(unittest.TestCase):
         file_hash = ResumeParserService.calculate_sha256(file_bytes)
         parsed = ResumeParserService.parse_information(sample_resume_text)
         
-        cand = Candidate(
-            full_name=parsed["full_name"],
-            email=parsed["email"],
-            phone=parsed["phone"],
-            experience_years=parsed["experience_years"],
-            skills=parsed["skills"]
-        )
-        self.db.add(cand)
-        self.db.commit()
-        self.db.refresh(cand)
+        # Handle idempotency: look up or create candidate
+        cand = self.db.query(Candidate).filter(Candidate.email == parsed["email"]).first()
+        if not cand:
+            cand = Candidate(
+                full_name=parsed["full_name"],
+                email=parsed["email"],
+                phone=parsed["phone"],
+                experience_years=parsed["experience_years"],
+                skills=parsed["skills"]
+            )
+            self.db.add(cand)
+            self.db.commit()
+            self.db.refresh(cand)
 
         resume = Resume(
             candidate_id=cand.id,
