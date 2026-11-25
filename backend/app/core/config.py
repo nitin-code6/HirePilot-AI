@@ -1,6 +1,10 @@
+import os
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
-import os
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+DEFAULT_DB_PATH = (BASE_DIR / "hirepilot.db").as_posix()
 
 class Settings(BaseSettings):
     APP_ENV: str = "development"
@@ -9,8 +13,8 @@ class Settings(BaseSettings):
     BACKEND_URL: str = "http://localhost:8000"
     FRONTEND_URL: str = "http://localhost:5173"
     
-    # Database
-    DATABASE_URL: str = "sqlite+aiosqlite:///./hirepilot.db"
+    # Database - default to absolute path to root hirepilot.db so cwd doesn't matter
+    DATABASE_URL: str = f"sqlite+aiosqlite:///{DEFAULT_DB_PATH}"
     REDIS_URL: str = "redis://localhost:6379/0"
     
     # Security
@@ -39,7 +43,7 @@ class Settings(BaseSettings):
     GOOGLE_REDIRECT_URI: str = "http://localhost:8000/api/v1/integrations/google/callback"
     
     # Storage
-    UPLOAD_DIR: str = "./uploads"
+    UPLOAD_DIR: str = str(BASE_DIR / "uploads")
     MAX_UPLOAD_SIZE_MB: int = 10
     
     model_config = SettingsConfigDict(
